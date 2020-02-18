@@ -14,6 +14,7 @@ namespace Aftr {
 		virtual std::string toString() const;
 
 		Vector pos;
+		int id;
 	protected:
 
 	};

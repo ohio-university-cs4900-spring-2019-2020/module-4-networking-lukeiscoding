@@ -11,21 +11,22 @@ NetMsgMacroDefinition(NetMsgSimpleWO);
 
 bool NetMsgSimpleWO::toStream(NetMessengerStreamBuffer & os) const
 {
-	os << pos.x << pos.y << pos.z;
+	os << pos.x << pos.y << pos.z << id;
 	return true;
 }
 
 bool NetMsgSimpleWO::fromStream(NetMessengerStreamBuffer & is)
 {
-	is >> pos.x >> pos.y >> pos.z;
+	is >> pos.x >> pos.y >> pos.z >> id;
 	return true;
 }
 
 void NetMsgSimpleWO::onMessageArrived()
 {
-	WO* wo = ((GLViewNewModule*)ManagerGLView::getGLView())->getActorLst()->at(0);
+	WO* wo = ((GLViewNewModule*)ManagerGLView::getGLView())->getActorLst()->at(id);
 	wo->setPosition(pos);
 	std::cout << this->toString() << std::endl;
+	std::cout << "jet " << id + 1 << " is taking off!" << std::endl;
 }
 
 std::string NetMsgSimpleWO::toString() const
@@ -33,6 +34,6 @@ std::string NetMsgSimpleWO::toString() const
 	std::stringstream ss;
 	ss << NetMsg::toString();
 	ss << "Payload: \n"
-		<< "p:{" << pos.x << "," << pos.y << "," << pos.z << "}\n";
+		<< "p:{" << pos.x << "," << pos.y << "," << pos.z << "} id:"<<id<<"\n";
 	return ss.str();
 }

@@ -110,6 +110,13 @@ void GLViewNewModule::updateWorld()
 	// update cam position
 	SoundManager::setCamPosition(this->cam->getPosition(), this->cam->getLookDirection(), Vector(0, 0, 0), this->cam->getNormalDirection());
 
+	// pos update // it works but not useful, too much waste.
+	//WO* wo = actorLst->at(0);
+	//NetMsgSimpleWO msg;
+	//msg.pos = wo->getPosition();
+	//msg.id = 0;
+	//client->sendNetMsgSynchronousTCP(msg);
+
 }
 
 
@@ -144,12 +151,6 @@ void GLViewNewModule::onKeyDown(const SDL_KeyboardEvent& key)
 	if (key.keysym.sym == SDLK_0)
 		this->setNumPhysicsStepsPerRender(1);
 
-	if (key.keysym.sym == SDLK_1)
-	{
-
-	}
-
-
 	// press 's' to open your sound radar to determine where the enermy is
 	// the enermy will say different things. Listen carefully
 	if (key.keysym.sym == SDLK_s) 
@@ -174,20 +175,64 @@ void GLViewNewModule::onKeyDown(const SDL_KeyboardEvent& key)
 		}
 	}
 
-	// press 'm' to take off the jet
-	if (key.keysym.sym == SDLK_m)
+	// press '1' to take off the jet 1
+	if (key.keysym.sym == SDLK_1)
 	{
 		WO* wo = actorLst->at(0);
 		Vector v = wo->getPosition();
-		v.x = v.x + 1;
 		if (v.x > 30) {
-			v.z = v.z + 1;
+			wo->moveRelative(Vector(0.5, 0.5, 0.5));
+			wo->resetJoints();
+			wo->changeOrientationWRTparentDeltaRoll(10);
 		}
-		wo->setPosition(v);
-		printf("jet taking off!\n");
+		else {
+			wo->moveRelative(Vector(0.5, 0.5, 0));
+		}
+		printf("jet 1 taking off!\n");
 		// update position
 		NetMsgSimpleWO msg;
 		msg.pos = wo->getPosition();
+		msg.id = 0;
+		client->sendNetMsgSynchronousTCP(msg);
+	}
+	// press '1' to take off the jet 2
+	if (key.keysym.sym == SDLK_2)
+	{
+		WO* wo = actorLst->at(1);
+		Vector v = wo->getPosition();
+		if (v.x > 30) {
+			wo->moveRelative(Vector(0.5, -0.5, 0.6));
+			wo->resetJoints();
+			wo->changeOrientationWRTparentDeltaRoll(10);
+		}
+		else {
+			wo->moveRelative(Vector(0.5, -0.5, 0));
+		}
+		printf("jet 2 taking off!\n");
+		// update position
+		NetMsgSimpleWO msg;
+		msg.pos = wo->getPosition();
+		msg.id = 1;
+		client->sendNetMsgSynchronousTCP(msg);
+	}
+	// press '1' to take off the jet 3
+	if (key.keysym.sym == SDLK_3)
+	{
+		WO* wo = actorLst->at(2);
+		Vector v = wo->getPosition();
+		if (v.x > 30) {
+			wo->moveRelative(Vector(1, 0, 1));
+			wo->resetJoints();
+			wo->changeOrientationWRTparentDeltaRoll(10);
+		}
+		else {
+			wo->moveRelative(Vector(1, 0, 0));
+		}
+		printf("jet 3 taking off!\n");
+		// update position
+		NetMsgSimpleWO msg;
+		msg.pos = wo->getPosition();
+		msg.id = 2;
 		client->sendNetMsgSynchronousTCP(msg);
 	}
 
@@ -312,12 +357,14 @@ void Aftr::GLViewNewModule::loadMap()
 	wo->setPosition(Vector(0, 10, 5));
 	wo->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
 	wo->setLabel("jet2");
+	actorLst->push_back(wo);
 	worldLst->push_back(wo);
 
 	wo = WO::New(jet, Vector(1, 1, 1), MESH_SHADING_TYPE::mstFLAT);
 	wo->setPosition(Vector(0, -10, 5));
 	wo->renderOrderType = RENDER_ORDER_TYPE::roOPAQUE;
 	wo->setLabel("jet3");
+	actorLst->push_back(wo);
 	worldLst->push_back(wo);
 
 	wo = WO::New(jet, Vector(1, 1, 1), MESH_SHADING_TYPE::mstFLAT);
